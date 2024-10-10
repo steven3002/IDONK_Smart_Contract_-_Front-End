@@ -1,0 +1,12 @@
+
+interface IVotesState {
+    function setProfileAddress(address _address) external;
+
+    function setRewardAddress(address _address) external;
+
+    function voteContent(uint8 content_id, int8 vote, address voter, uint256 stake) external;
+
+    function getVoters(uint8 content_id) external view returns (string[] memory);
+
+    function getTotalVotes(uint8 content_id) external view returns (string memory);
+}

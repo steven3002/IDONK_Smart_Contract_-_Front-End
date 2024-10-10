@@ -1,0 +1,22 @@
+
+interface ITest {
+    function setContentAddress(address _address) external;
+
+    function setSelfAddress(address _address) external;
+
+    function setVoteAddress(address _address) external;
+
+    function setCommunityAddress(address _address) external;
+
+    function setErc2OAddress(address _address) external;
+
+    function setProfileAddress(address _address) external;
+
+    function setReward(address _address) external;
+
+    function voteContent(uint8 community_index, uint256 stake, uint8 content_id, int8 vote) external;
+
+    function registerUser() external;
+
+    function addContent(string calldata title, string calldata content_data, uint8 community_id, uint256 stake) external;
+}

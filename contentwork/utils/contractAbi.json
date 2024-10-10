@@ -1,0 +1,86 @@
+[
+    {
+        "inputs": [
+            {
+                "internalType": "address",
+                "name": "author",
+                "type": "address"
+            },
+            {
+                "internalType": "string",
+                "name": "sub_data",
+                "type": "string"
+            },
+            {
+                "internalType": "string",
+                "name": "content_data",
+                "type": "string"
+            },
+            {
+                "internalType": "uint8",
+                "name": "community_id",
+                "type": "uint8"
+            },
+            {
+                "internalType": "uint8",
+                "name": "content_id",
+                "type": "uint8"
+            }
+        ],
+        "name": "submitContent",
+        "outputs": [],
+        "stateMutability": "nonpayable",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "uint8",
+                "name": "content_id",
+                "type": "uint8"
+            }
+        ],
+        "name": "getContent",
+        "outputs": [
+            {
+                "internalType": "string",
+                "name": "",
+                "type": "string"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "uint8",
+                "name": "community_id",
+                "type": "uint8"
+            }
+        ],
+        "name": "getContentByCommunity",
+        "outputs": [
+            {
+                "internalType": "string[]",
+                "name": "",
+                "type": "string[]"
+            }
+        ],
+        "stateMutability": "view",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "uint8",
+                "name": "content_id",
+                "type": "uint8"
+            }
+        ],
+        "name": "verifyContent",
+        "outputs": [],
+        "stateMutability": "nonpayable",
+        "type": "function"
+    }
+]

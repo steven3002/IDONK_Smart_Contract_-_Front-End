@@ -1,0 +1,23 @@
+interface ITest {
+    function setContentAddress(address _address) external;
+
+    function setVoteAddress(address _address) external;
+
+    function setProfileAddress(address _address) external;
+
+    function setCommunityAddress(address _address) external;
+
+    function getContent(uint8 content_id) external view returns (string memory);
+
+    function getContentList(uint8 community_id) external view returns (string[] memory);
+
+    function hasRegistered() external view returns (bool);
+
+    function getProfile() external view returns (string memory);
+
+    function getMyStakes() external view returns (string[] memory);
+
+    function getVoters(uint8 content_id) external view returns (string[] memory);
+
+    function getTotalVotes(uint8 content_id) external view returns (string memory);
+}

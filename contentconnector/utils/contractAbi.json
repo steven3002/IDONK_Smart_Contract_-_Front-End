@@ -1,0 +1,51 @@
+[
+    {
+        "inputs": [
+            {
+                "internalType": "address",
+                "name": "_address",
+                "type": "address"
+            }
+        ],
+        "name": "setContentAddress",
+        "outputs": [],
+        "stateMutability": "nonpayable",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "address",
+                "name": "_address",
+                "type": "address"
+            }
+        ],
+        "name": "setProfileAddress",
+        "outputs": [],
+        "stateMutability": "nonpayable",
+        "type": "function"
+    },
+    {
+        "inputs": [
+            {
+                "internalType": "string",
+                "name": "sub_data",
+                "type": "string"
+            },
+            {
+                "internalType": "string",
+                "name": "content_data",
+                "type": "string"
+            },
+            {
+                "internalType": "uint8",
+                "name": "community_id",
+                "type": "uint8"
+            }
+        ],
+        "name": "addContent",
+        "outputs": [],
+        "stateMutability": "nonpayable",
+        "type": "function"
+    }
+]

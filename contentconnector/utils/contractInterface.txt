@@ -1,0 +1,10 @@
+
+interface ITest {
+    function setContentAddress(address _address) external;
+
+ 
+    function setProfileAddress(address _address) external;
+
+
+    function addContent(string calldata title, string calldata content_data, uint8 community_id) external;
+}

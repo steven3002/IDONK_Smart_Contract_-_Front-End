@@ -1,0 +1,5 @@
+interface ITest {
+    function setProfileAddress(address _address) external;
+
+    function registerUser() external;
+}

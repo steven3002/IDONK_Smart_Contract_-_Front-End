@@ -1,0 +1,14 @@
+
+interface ICommunityState {
+    function createCommunity(string calldata name, string calldata description) external;
+
+    function getCommunity(uint8 index) external view returns (string memory);
+
+    function addUserToCommunity(uint8 community_id) external;
+
+    function isAMember(uint8 index, address user) external view returns (bool);
+
+    function nameTaken(string calldata name) external view returns (bool);
+
+    function getLastIndex() external view returns (string memory);
+}

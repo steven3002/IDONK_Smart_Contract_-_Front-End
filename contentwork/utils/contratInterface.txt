@@ -1,0 +1,10 @@
+
+interface IContentState {
+    function submitContent(address author, string calldata title, string calldata content_data, uint8 community_id, uint8 content_id) external;
+
+    function getContent(uint8 content_id) external view returns (string memory);
+
+    function getContentByCommunity(uint8 community_id) external view returns (string[] memory);
+
+    function verifyContent(uint8 content_id) external;
+}

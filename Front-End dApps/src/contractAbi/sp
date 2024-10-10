@@ -1,0 +1,6 @@
+let voteAddress = getAddress("0x76fa22a20f925eac1c37bc5785eb821e4fd3f23d"); //done
+let contentAddress = getAddress("0x57aad295e641742441c782d75238b0944528ab30"); //done
+let erc20Adderess = getAddress("0xf43980d57ae6d79d56f069cdaa351395610381ba"); //done
+let communityAddress = getAddress("0x2e7298aa7498c80bc73635452264d6970bc89fc6"); //done
+let profileAddress = getAddress("0x11467abf4ef927543d35444c61c376ce51b3fbc2"); //done
+let contentAddress = getAddress("0x57aad295e641742441c782d75238b0944528ab30"); //done

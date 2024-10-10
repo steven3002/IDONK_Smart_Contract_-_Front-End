@@ -1,0 +1,142 @@
+.voting-app {
+    display: flex;
+}
+.voting-app aside {
+    width: 25%;
+    height: 100%;
+}
+.voting-app > main {
+    width: 75%;
+    height: 100%;
+}
+.sb-main {
+    border-right: 1px solid var(--bordergrey);
+}
+.voting-app-wrapper, .voting-app-wrapper > div {
+    width: 100%;
+    height: 100%;
+}
+div .sidebar, .sidebar > div, .sb-main > div {
+    width: 100%;
+}
+div .sidebar {
+    height: 100%;
+}
+.sidebar .sb-main {
+    height: calc(100% - 56px);
+    padding-top: 10px;
+}
+.sb-header, .sb-main-li {
+    display: flex;
+    align-items: center;
+}
+.sb-header {
+    justify-content: flex-start;
+    padding: 10px;
+    height: 55.8px;
+    border-bottom: 1px solid var(--bordergrey);
+}
+.sb-header .sb-icon {
+    display: none;
+}
+.sb-header img {
+    width: 150px;
+    height: 30px;
+}
+.sb-icon {
+    height: 19px;
+    width: 19px;
+}
+.sb-header h4 {
+    margin-left: 9px;
+    font-size: 20px;
+    font-weight: bold;
+    margin: 0;
+    padding: 0;
+}
+.sb-main-li {
+    padding: 10px 20px;
+    margin: 15px 0px;
+}
+.sb-main-li:first {
+    margin-top: 20px;
+}
+.sb-main-li.true {
+    background-color: #f5f5f5;
+}
+.md-groups {
+    width: 30px;
+    height: 30px;
+    background-color: #8a8a8a;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    padding: 0px 2.5px;
+}
+.sb-main-li .sb-icon {
+    width: 30px;
+    height: 30px;
+    color: #8a8a8a;
+}
+.md-groups .sb-icon {
+    width: 27px;
+    height: 27px;
+    color: var(--white);
+}
+.sb-main-txt {
+    font-size: 18px;
+    margin-left: 15px;
+    color: #717171;
+}
+.sb-main-li.true .sb-icon {
+    color: #2e2e2e;
+}
+.sb-main-li.true .md-groups {
+    background-color: #2e2e2e;
+}
+.sb-main-li.true .md-groups .sb-icon {
+    color: var(--white);
+}
+.sb-main-li.true .sb-main-txt {
+    font-weight: 580;
+    color: #2e2e2e;
+}
+
+@media screen and (max-width: 1024px) {
+    .voting-app aside {
+        width: 35%;
+        height: 100%;
+    }
+    .voting-app > main {
+        width: 65%;
+        height: 100%;
+    }
+}
+
+@media screen and (max-width: 770px) {
+    .sb-header .sb-icon {
+        display: block;
+    }
+    .sb-header h4 {
+        margin-left: 9px;
+        font-size: 18px;
+    }
+    .voting-app aside {
+        width: 100%;
+        position: fixed;
+        z-index: 999;
+        height: 100%;
+    }
+    .voting-side.false {
+        display: none;
+    }
+    .voting-side.true {
+        display: block;
+        background-color: var(--white);
+    }
+    .voting-app > main {
+        width: 100%;
+        height: 100%;
+    }
+}

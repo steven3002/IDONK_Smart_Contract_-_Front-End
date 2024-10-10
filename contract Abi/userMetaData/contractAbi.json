@@ -18,7 +18,13 @@
         "type": "function"
     },
     {
-        "inputs": [],
+        "inputs": [
+            {
+                "internalType": "address",
+                "name": "user_id",
+                "type": "address"
+            }
+        ],
         "name": "getMetaData",
         "outputs": [
             {

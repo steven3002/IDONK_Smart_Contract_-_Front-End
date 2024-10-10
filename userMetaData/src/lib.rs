@@ -52,8 +52,7 @@ impl Users {
         taken_name.set(true);
     }
 
-    pub fn get_meta_data(&self) -> String {
-        let user_id = msg::sender();
+    pub fn get_meta_data(&self, user_id: Address) -> String {
         let user = self.users.get(user_id);
 
         let formatted_string = format!(

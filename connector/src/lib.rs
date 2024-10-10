@@ -131,16 +131,14 @@ impl Test {
         meta_date_contract.has_registered(config, user).expect("drat")
     }
 
-    pub fn get_profile(&self) -> String {
-        let user = msg::sender();
+    pub fn get_profile(&self, user: Address) -> String {
         let address = self.user_profile_address.get();
         let meta_date_contract = IUsers::new(address);
         let config = Call::new();
         meta_date_contract.get_profile(config, user).expect("drat")
     }
 
-    pub fn get_my_stakes(&self) -> Vec<u8> {
-        let user = msg::sender();
+    pub fn get_my_stakes(&self, user: Address) -> Vec<u8> {
         let address = self.user_profile_address.get();
         let meta_date_contract = IUsers::new(address);
         let config = Call::new();

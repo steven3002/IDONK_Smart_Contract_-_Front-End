@@ -1,0 +1,249 @@
+.Wallet {
+    width: 100%;
+    height: 100%;
+}
+.Wallet > div {
+    width: 100%;
+}
+.wallet-header {
+    padding: 15px;
+    padding-top: 14px;
+    border-left: 1px solid var(--bordergrey);
+    border-bottom: 1px solid var(--bordergrey);
+}
+.wallet-header, .wallet-actions, .wallet-actions > div, .wh-li {
+    display: flex;
+    align-items: center;
+}
+.wallet-main, .wallet-action {
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+}
+.wallet-header h2 {
+    margin: 0;
+    padding: 0;
+    font-size: 20px;
+}
+.wallet-main-wrapper {
+    padding: 15px;
+    height: calc(100% - 56.5px);
+    overflow-y: auto;
+}
+.wh-hamburger {
+    width: 20px;
+    height: 20px;
+    display: none;
+}
+.wallet-details {
+    border: 1px solid var(--bordergrey);
+    padding: 27px 21px;
+    padding-right: 60px;
+    border-radius: 6px;
+    width: max-content;
+    max-width: 100%;
+    margin-left: 12px;
+}
+.wallet-details h4 {
+    margin: 0px;
+    font-weight: 450;
+}
+.wallet-details h1 {
+    margin: 0px;
+    margin-top: 10px;
+}
+.wallet-amount-loading {
+    width: 100%;
+    margin-top: 10px;
+    height: 24px;
+}
+.wallet-actions {
+    justify-content: center;
+}
+.wallet-actions > div {
+    border: 1px solid var(--bordergrey);
+    padding: 10px 15px;
+    border-radius: 6px;
+}
+.wallet-actions, .wallet-history {
+    margin-top: 20px;
+    width: min(100%, 700px);
+}
+.wallet-action {
+    padding: 12px 27px;
+    width: 100px;
+    cursor: pointer;
+    border-left: 1px solid var(--bordergrey);
+}
+.wallet-action:first-child {
+    border-left: none;
+}
+.wallet-action:nth-child(2) {
+    padding: 12px 33px;
+}
+.wa-icons {
+    width: 30px;
+    height: 30px;
+    color: #575757;
+}
+.wallet-action span {
+    margin-top: 6px;
+    font-size: 18px;
+    font-weight: 500;
+}
+.wallet-history {
+    border: 1px solid var(--bordergrey);
+    padding: 12px;
+    border-radius: 10px;
+    margin-top: 36px;
+}
+.wh {
+    width: 100%;
+    padding: 12px 10px;
+    padding-top: 3px;
+}
+.wh h4 {
+    margin: 0;
+    padding: 0;
+    font-size: 18px;
+}
+.wallet-history ul {
+    border-top: 1px solid var(--bordergrey);
+    width: 100%;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+.wh-li {
+    width: 100%;
+    padding: 10px 0px;
+    border-bottom: 1px solid var(--bordergrey);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+.wallet-history li:last-child {
+    border-bottom: none;
+}
+.wh-li > div {
+    padding: 0px 10px;
+}
+.whl-img {
+    width: 36px;
+    height: 36px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: var(--grey);
+    border-radius: 50%;
+}
+.whl-img img, .whl-img div {
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+}
+.whli-loading {
+    padding: 0 !important;
+    background-color: transparent;
+}
+.whl-icon {
+    width: 24px;
+    height: 24px;
+    color: var(--white);
+}
+.whl-icon.whli-loading {
+    border-radius: 50%;
+}
+.whl-txt {
+    flex: 3;
+}
+.whl-txt, .whl-det {
+    display: flex;
+    flex-direction: column;
+}
+.whl-det {
+    align-items: flex-end;
+}
+.whl-type {
+    font-size: 16px;
+    font-weight: 500;
+}
+.whl-loading {
+    width: 90%;
+    height: 16px;
+}
+.whl-address {
+    font-size: 14px;
+    color: var(--grey);
+    margin-top: 3px;
+}
+.whl-time {
+    font-size: 13px;
+    color: var(--grey);
+    margin-top: 3px;
+}
+.whl-amount {
+    font-size: 18px;
+    font-weight: 700;
+}
+.whld-loading {
+    width: 60px;
+    height: 18px;
+}
+.whl-time.whld-loading {
+    height: 15px;
+}
+
+.wallet-loading-spinner {
+    margin: 12px 0px;
+    width: 100%;
+    height: 50px;
+    display: flex;
+    justify-content: center;
+}
+.wallet-loading-spinner > div {
+    width: 40px;
+    height: 40px;
+}
+
+
+@media screen and (max-width: 770px) {
+    .wh-hamburger {
+        display: block;
+    }
+    .wallet-header h2 {
+        margin-left: 10px;
+    }
+    .whl-img {
+        width: 30px;
+        height: 30px;
+    }
+    .whl-icon {
+        width: 18px;
+        height: 18px;
+    }
+    .whl-time, .whl-address {
+        font-size: 14px;
+    }
+    .whl-amount {
+        font-size: 16px;
+    }
+    .whl-type {
+        font-size: 15px;
+    }
+    .wallet-details {
+        padding-right: 21px;
+    }
+}
+
+@media screen and (max-width: 650px) {
+    .whl-time, .whl-address {
+        font-size: 13px;
+    }
+}
+
+@media screen and (max-width: 600px) {
+    .whl-time, .whl-address {
+        font-size: 14px;
+    }
+}

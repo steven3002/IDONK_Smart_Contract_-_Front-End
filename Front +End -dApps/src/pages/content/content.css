@@ -49,7 +49,7 @@ div .pc-main-main {
 }
 .pc-groupings {
     width: 100%;
-    margin-top: 20px;
+    margin-top: 15px;
 }
 .pc-base {
     width: 100%;
@@ -160,16 +160,46 @@ div .pc-main-main {
 .post__Reward {
     width: max-content;
     margin-top: 0px;
+    position: relative;
+}
+.claimNotif::before {
+    content: '';
+    position: absolute;
+    bottom: 100%;
+    width: 0px;
+    height: 0px;
+    right: 20px;
+    border-right: 6px solid transparent;
+    border-left: 6px solid transparent;
+    border-bottom: 6px solid rgba(27, 27, 27, 0.7);
+}
+.claimNotif {
+    position: absolute;
+    top: 110%;
+    right: 0px;
+    width: max-content;
+    padding: 6px 9px;
+    line-height: 14px;
+    font-size: 13px;
+    border-radius: 6px;
+    background-color: rgba(27, 27, 27, 0.7);
+    color: var(--white);
 }
 .claim-post-reward {
     width: max-content;
-    padding: 8px 18px;
-    padding-bottom: 10px;
+    padding: 6px 18px;
+    padding-bottom: 8px;
     background-color: var(--bgblue);
     color: var(--white);
+    line-height: 15px;
     font-size: 14px;
     font-weight: 480;
     border-radius: 18px;
+}
+.claim-post-reward.false {
+    background-color: #f5f5f5;
+    color: var(--grey);
+    border: 1px solid var(--grey);
 }
 .pc-details {
     width: calc(100% - 150px);

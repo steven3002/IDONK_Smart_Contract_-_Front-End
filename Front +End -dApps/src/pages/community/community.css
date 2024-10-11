@@ -8,6 +8,12 @@
     border-left: 1px solid var(--bordergrey);
     border-bottom: 1px solid var(--bordergrey);
 }
+.cmtContent {
+    width: 100%;
+}
+.cmtContent .community-header {
+    display: none !important;
+}
 .community-main {
     display: flex;
 }

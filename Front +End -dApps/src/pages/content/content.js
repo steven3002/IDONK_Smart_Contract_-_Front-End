@@ -35,6 +35,7 @@ const Content = () => {
     const [content, setContent] = useState({});
     const [userVoteType, setUserVoteType] = useState(0);
     const [totalVotes, setTotalVotes] = useState(0);
+    const [claimNotif, setClaimNotif] = useState('');
     const textRef = useRef();
     const contentError = 'No content with this id';
 
@@ -128,7 +129,16 @@ const Content = () => {
         else navigate('/app');
     };
 
+    const setter = (note) => {
+        setClaimNotif(note);
+        setTimeout(() => setClaimNotif(''), 2000);
+    };
+
     const claimReward = async () => {
+        if(!userVoteType) return setter('Vote/Stake on the content before you can get reward.');
+        if(isRewarded) return setter('You have claimed reward for this content already.');
+        if(!rewardableThreshold(userVoteType, totalVotes)) return setter('Reward threshold has not been reached.');
+
         try {
             const rewardsContractInstance = await createRewardsContractInstance(contract.signer);
             // check if user can claim reward i.e we not in cool down period
@@ -153,13 +163,6 @@ const Content = () => {
     };
     
     const dummy = Array(6).fill(0);
-
-    const showRewardButton = useMemo(() => {
-        // userVoteType && !isRewarded because
-        // isRewarded is true for all but is correct or updated for users who have voted
-        if(!loading && (userVoteType && !isRewarded) && rewardableThreshold(userVoteType, totalVotes)) return true;
-        else return false;
-    }, [userVoteType, loading, isRewarded, totalVotes]);
 
     const copyLink = async () => {
         try {
@@ -212,10 +215,11 @@ const Content = () => {
                     <div className='pc-main-p'>
                         <span>{`Posted ${formatDate(content.timestamp, true)}`}</span>
 
-                        {showRewardButton && <div className='post__Reward'>
-                            <div className='claim-post-reward cursor' onClick={claimReward}>
+                        {!votesLoading && <div className='post__Reward'>
+                            <div className={`claim-post-reward cursor ${userVoteType-0 !== 0}`} onClick={claimReward}>
                                 {claiming ? 'Claiming...' : 'Claim'}
                             </div>
+                            {claimNotif && <div className='claimNotif'>{claimNotif}</div>}
                         </div>}
                     </div> : 
                     <div className='pcm-loading p'>

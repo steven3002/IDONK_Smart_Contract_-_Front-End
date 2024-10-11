@@ -256,7 +256,7 @@ const CommunityPage = ({ toggleSidebar }) => {
                             </div>}
                             
                             <div className='cmd-metric'>
-                                <span className='cmdm-value cmdm-date'>{formatDate(community.created_at, true)}</span>
+                                <span className='cmdm-value cmdm-date'>{formatDate(community.created_at, true, true)}</span>
                                 <span className='cmdm-name'>Created</span>
                             </div>
                         </div>

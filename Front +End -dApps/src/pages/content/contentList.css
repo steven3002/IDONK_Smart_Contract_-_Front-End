@@ -230,6 +230,8 @@ main .post-error {
 }
 .pl-groupings {
     display: flex;
+    flex-wrap: wrap;
+    margin-left: -10px;
     width: calc(100% - 50px);
 }
 .plg-loading {
@@ -247,10 +249,8 @@ main .post-error {
     border-radius: 6px;
     background-color: #edecec;
     font-size: 13.5px;
-    margin-left: 8px;
-}
-.pl-group:first-child {
-    margin-left: 0px;
+    margin-left: 10px;
+    margin-top: 10px
 }
 .pl-votes {
     font-weight: 490;

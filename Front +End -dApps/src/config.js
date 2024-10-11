@@ -6,6 +6,12 @@ export const COMMUNITY_PAGINATION_LENGTH = 18;
 
 export const BAD_INDEX = 7;
 
+export const PDFs_OK = false;
+
+export const barred = ['.pdf', '.zar', '.zip', '.rar'];
+
+export const PDF_ERROR = (bar) => `We are on Free account and it does not support ${bar} files We hope to upgrade and serve you better`;
+
 export const etherscanApiKey = "U6SA62AJSXZFUW7FRA6XA8MN46HZ3RJFI3";
 
 export const ERC20_ADDRESS = "0xf43980d57ae6d79d56f069cdaa351395610381ba";

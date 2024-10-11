@@ -13,7 +13,7 @@ import { generateHTMLString, getTokenAmount, multiplyBigDecimals, parseContentDa
 import { setMessage } from "../../store/message";
 import { postingContent } from "../../store/contents";
 import { sendFile } from "../../services";
-import { MB, POST_TAGS } from "../../config";
+import { barred, MB, PDF_ERROR, PDFs_OK, POST_TAGS } from "../../config";
 import { createContentCreatorContractInstance, createUserContractInstance, createVotesContractInstance, parseBigInt } from "../../services/contracts_creators";
 import { setWallet } from "../../store/wallet";
 
@@ -81,6 +81,10 @@ const PostModal = ({ closeModal, destination, community_id }) => {
     function handleFileChange(e) {
         const file = e.target.files[0];
         if(!file?.size) return;
+
+        const bar = barred.find(x => file.name.endsWith(x));
+        if(!PDFs_OK && bar) return setMessageFn(setMessageData, { status: 'error', message: PDF_ERROR(bar) });
+
         if(file.size > (MB * 1024 * 1024)) {
             return setMessageFn(setMessageData, { status: 'error', message: `File cannot be more than ${MB}MB` });
         }
@@ -156,11 +160,12 @@ const PostModal = ({ closeModal, destination, community_id }) => {
                 postDestination === 'Your feed' ? 0 : community_id || 0
             );
 
-            let content_id = cnt_id;
+            let content_id = cnt_id, timer = '';
 
             while(content_id == cnt_id) {
-                await new Promise((resolve) => setTimeout(resolve, 2000));
+                await new Promise((resolve) => timer = setTimeout(resolve, 300));
                 content_id = await contractInstance.getDraft();
+                if(timer) clearTimeout(timer);
             }
 
             const cmmty_id = postDestination === 'Your feed' ? 0 : (community_id || 0);

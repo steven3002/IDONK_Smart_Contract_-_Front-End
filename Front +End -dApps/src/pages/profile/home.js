@@ -48,7 +48,7 @@ const ProfileHomePage = () => {
         for(const response of Array.from(res).reverse()) {
             if(!inProductionContent(response)) continue;
             const value = parseContentData(response);
-            if(value.author === contract.address) {
+            if(value.author === id) {
                 const author = await userContractInstance.getUsername(value.author);
                 const total_votes = await contentContractInstance.getTotalVotes(value.content_id-0);
                 data.push({ ...value, author, votes: total_votes, author_id: value.author });

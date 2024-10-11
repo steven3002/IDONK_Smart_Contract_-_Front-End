@@ -50,17 +50,47 @@ const days = [ 31,
     31, 30, 31, 30, 31, 31, 30, 31, 30, 31
 ];
 
-export const formatDate = (date, ethereum_type = false) => {
+export const getCommtyDate = (diff_secs, date, today) => {
+
+    const ms = 1000;
+    if(diff_secs < 60 * ms) {
+        // secs diff is less than or 60 => not up to a min (60 secs)
+        const diff = (today.getSeconds() - date.getSeconds() + 60) % 60;
+        return diff > 1 ? diff + ' secs ago' : 'a sec ago';
+    } else if(diff_secs < 60 * 60 * ms) {
+        // secs diff is less than or 60 * 60 => not up to a an hour (60 mins * 60 secs)
+        const diff = (today.getMinutes() - date.getMinutes() + 60) % 60;
+        return diff > 1 ? diff + ' mins ago' : 'a min ago';
+    } else if(diff_secs < 24 * 60 * 60 * ms) {
+        const diff = (today.getHours() - date.getHours() + 24) % 24;
+        return diff > 1 ? diff + ' hours ago' : 'an hour ago';
+    } else if(today.getMonth() === date.getMonth()) {
+        // uncomment
+        const month_days = days[date.getMonth()];
+        const diff = (today.getDate() - date.getDate() + month_days) % month_days;
+        return diff > 1 ? diff + ' days ago' : 'a day ago';
+    } else if(today.getFullYear() === date.getFullYear()) {
+        // uncomment
+        const diff = (today.getMonth() - date.getMonth() + 12) % 12;
+        return diff > 1 ? diff + ' months ago' : 'a month ago';
+    } else {
+        return String(date).slice(4, 15);
+    }
+};
+
+export const formatDate = (date, ethereum_type = false, commty = false) => {
     if(ethereum_type) date = (date + '000') - 0;
     date = new Date(date);
     const today = new Date();
     const diff_secs = today.getTime() - date.getTime();
     const ms = 1000;
 
+    if(commty) return getCommtyDate(diff_secs, date, today);
+
     if(diff_secs < 60 * ms) {
         // secs diff is less than or 60 => not up to a min (60 secs)
         const diff = (today.getSeconds() - date.getSeconds() + 60) % 60;
-        return diff > 1 ? diff + ' mins ago' : 'a min ago';
+        return diff > 1 ? diff + ' secs ago' : 'a sec ago';
     } else if(diff_secs < 60 * 60 * ms) {
         // secs diff is less than or 60 * 60 => not up to a an hour (60 mins * 60 secs)
         const diff = (today.getMinutes() - date.getMinutes() + 60) % 60;
@@ -73,35 +103,6 @@ export const formatDate = (date, ethereum_type = false) => {
     } else if(today.getFullYear() === date.getFullYear()) {
         return `${String(date).slice(4, 10)} at ${String(date).slice(16, 21)}`;
     } else return `${String(date).slice(4, 15)} at ${String(date).slice(16, 21)}`;
-
-
-    // 
-        // secs diff is less than or 24 * 60 * 60 => not up to a a day (24 hrs * 60 mins * 60 secs)
-        // uncomment
-    //     const diff = (today.getHours() - date.getHours() + 24) % 24;
-    //     return diff > 1 ? diff + ' hours ago' : 'an hour ago';
-    // } else if(today.getMonth() === date.getMonth()) {
-
-        // comment
-        // by now we know difference is more than a day, so check is on months above
-        // if same month then just few days ago
-
-        // uncomment
-    //     const month_days = days[date.getMonth()];
-    //     const diff = (today.getDate() - date.getDate() + month_days) % month_days;
-    //     return diff > 1 ? diff + ' days ago' : 'a day ago';
-    // } else if(today.getFullYear() === date.getFullYear()) {
-
-        // comment
-        // by now we know difference is more than a month, so check is on year above
-        // if same year then just few months ago
-
-        // uncomment
-    //     const diff = (today.getMonth() - date.getMonth() + 12) % 12;
-    //     return diff > 1 ? diff + ' days ago' : 'a day ago';
-    // } else {
-    //     return String(date).slice(4, 15);
-    // }
 };
 
 export const generateHTMLString = (rawContent) => {

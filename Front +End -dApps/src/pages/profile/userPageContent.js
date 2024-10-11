@@ -5,7 +5,7 @@ import { BiUpvote, BiDownvote, BiSolidUpvote, BiSolidDownvote } from 'react-icon
 import { AiOutlineClose } from 'react-icons/ai';
 import StakeContentModal from '../content/stakeModal';
 import { useDispatch, useSelector } from 'react-redux';
-import { formatDate, getTokenAmount, rewardableThreshold, setMessageFn } from '../../utils';
+import { formatDate, getTokenAmount, parseContentData, ProfileAvatar, rewardableThreshold, setMessageFn } from '../../utils';
 import ContentFile from '../../component/contentFile';
 import SkeletonLoader from '../../component/skeleton';
 import { 
@@ -20,6 +20,8 @@ import NoData from '../../component/nodata';
 import { IoIosCopy } from 'react-icons/io';
 import { FRONTEND_URL } from '../../config';
 import { useNavigate } from 'react-router-dom';
+import ErrorPage from '../../component/error';
+import FeedsListsLoading from '../../component/feedsListsLoading';
 
 const UserPageContent = ({ feeds, error, contentId, setContentId }) => {
 
@@ -28,10 +30,13 @@ const UserPageContent = ({ feeds, error, contentId, setContentId }) => {
     const [loading, setLoading] = useState(true);
     const [isRewarded, setIsRewarded] = useState(false);
     const [claiming, setClaiming] = useState(false);
+    const [errorCnt, setErrorCnt] = useState(error);
     const [voters, setVoters] = useState([]);
     const [userVoteType, setUserVoteType] = useState(0);
     const [totalVotes, setTotalVotes] = useState(0);
+    const [claimNotif, setClaimNotif] = useState('');
     const textRef = useRef();
+    const contentError = 'No content with this id';
     
     const contract = useSelector(state => state.contract);
     const user = useSelector(state => state.user);
@@ -40,7 +45,7 @@ const UserPageContent = ({ feeds, error, contentId, setContentId }) => {
     const navigate = useNavigate();
     const setMessageData = bindActionCreators(setMessage, dispatch);
 
-    const content = feeds.find(val => val.content_id == contentId);
+    const [content, setContent] = useState(feeds.find(val => val.content_id == contentId) || {});
 
     function clickFn(type) { 
         // if user has voted , then do not show stake modal
@@ -53,12 +58,24 @@ const UserPageContent = ({ feeds, error, contentId, setContentId }) => {
     function closeModal() { setModal(''); }
 
     const fetchVoters = async () => {
-        setLoading(true);
+        setErrorCnt(false);
+        setLoading(!content.author ? 'fetching' : true);
 
         try {
-        
             const contentContractInstance = await createContentContractInstance(contract.signer);
             const userContractInstance = await createUserContractInstance(contract.signer);
+
+            if(!content.author) {
+                const res = await contentContractInstance.getContent(contentId-0);
+                if(!res) {
+                    return setErrorCnt(contentError);
+                }
+                const value = parseContentData(res);
+                const author = await userContractInstance.getUsername(value.author);
+                setContent({ ...value, author, author_id: value.author });
+                setLoading(true);
+            }
+        
             const votes_data = await contentContractInstance.getVoters(contentId-0);
             const data = [];
             for(const vote_data of Array.from(votes_data).reverse()) {
@@ -79,6 +96,7 @@ const UserPageContent = ({ feeds, error, contentId, setContentId }) => {
             setVoters(data);
             setLoading(false);
         } catch(err) {
+            setErrorCnt(true);
             setLoading(false);
             setMessageFn(setMessage, { status: 'error', message: 'Error with request. Check internet and try again.'});
         }
@@ -92,14 +110,23 @@ const UserPageContent = ({ feeds, error, contentId, setContentId }) => {
         if(textRef.current && content.sub_data) {
             textRef.current.innerHTML = content.sub_data.content;
         }
-    }, [content.content]);
+    }, [content?.content]);
 
     const date_val = useMemo(() => {
         const date = String(new Date(content.timestamp));
         return date.slice(0, 15) + ' at ' + date.slice(16, 21);
     }, []);
 
+    const setter = (note) => {
+        setClaimNotif(note);
+        setTimeout(() => setClaimNotif(''), 2000);
+    };
+
     const claimReward = async () => {
+        if(!userVoteType) return setter('Vote/Stake on the content before you can get reward.');
+        if(isRewarded) return setter('You have claimed reward for this content already.');
+        if(!rewardableThreshold(userVoteType, totalVotes)) return setter('Reward threshold has not been reached.');
+
         try {
             const rewardsContractInstance = await createRewardsContractInstance(contract.signer);
             // check if user can claim reward i.e we not in cool down period
@@ -120,13 +147,6 @@ const UserPageContent = ({ feeds, error, contentId, setContentId }) => {
     };
 
     const dummy = Array(6).fill(0);
-
-    const showRewardButton = useMemo(() => {
-        // userVoteType && !isRewarded because
-        // isRewarded is true for all but is correct or updated for users who have voted
-        if(!loading && (userVoteType && !isRewarded) && rewardableThreshold(userVoteType, totalVotes)) return true;
-        else return false;
-    }, [userVoteType, loading, isRewarded, totalVotes]);
     
     const copyLink = async () => {
         try {
@@ -155,9 +175,24 @@ const UserPageContent = ({ feeds, error, contentId, setContentId }) => {
             {!error && <div className='content-header'>
                 <AiOutlineClose className='ch-icon cursor' onClick={() => setContentId('')} />
             </div>}
-            
-            {/* would be helpful if we add for loading based on id in url */}
-            {/* !content.author ? <NoData text={'Content not found in this community.'} /> : */}
+            {
+            errorCnt ?
+
+            <div className='pc-main-error'>
+                <ErrorPage text={errorCnt === contentError ? errorCnt : ''} 
+                    important={true} btnName={errorCnt === contentError ? 'Go back to Home page.' : ''} 
+                    refreshFn={() => {
+                        if(errorCnt === contentError) return navigate('/app');
+                        fetchVoters();
+                    }} 
+                />
+            </div> :
+
+            loading === 'fetching' ?
+
+            <div className='cmtContent'><FeedsListsLoading /></div> :
+
+            !content.author ? <NoData text={'Content not found in this community.'} /> :
 
             <div className='pc-main'>
                 <h4>{content.sub_data.title}</h4>
@@ -170,10 +205,11 @@ const UserPageContent = ({ feeds, error, contentId, setContentId }) => {
                         From a Community
                     </div>}
 
-                    {showRewardButton && <div className='post__Reward'>
-                        <div className='claim-post-reward cursor' onClick={claimReward}>
+                    {!loading && <div className='post__Reward'>
+                        <div className={`claim-post-reward cursor ${userVoteType-0 !== 0}`} onClick={claimReward}>
                             {claiming ? 'Claiming...' : 'Claim'}
                         </div>
+                        {claimNotif && <div className='claimNotif'>{claimNotif}</div>}
                     </div>}
                 </div>
 
@@ -203,7 +239,7 @@ const UserPageContent = ({ feeds, error, contentId, setContentId }) => {
                         </div>
                     </div>
                     <div className="pc-details">
-                        <div className="pd-img"></div>
+                        <div className="pd-img">{<ProfileAvatar />}</div>
                         <div className='pd-txt'>
                             <span className="pd-poster cursor"
                             onClick={() => navigate(`/app/profile/${content.author_id}`)}>
@@ -217,6 +253,7 @@ const UserPageContent = ({ feeds, error, contentId, setContentId }) => {
                     </div>
                 </div>
             </div>
+            }
 
             {/* Add loading spinner here if we want to add a div to fetch users that staked/voted on this post */}
             {/* Hasn't been styled yet */}

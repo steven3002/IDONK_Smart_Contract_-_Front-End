@@ -6,7 +6,7 @@ import { AiOutlineClose } from 'react-icons/ai';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import StakeContentModal from '../content/stakeModal';
 import { useDispatch, useSelector } from 'react-redux';
-import { formatDate, getTokenAmount, ProfileAvatar, rewardableThreshold, setMessageFn } from '../../utils';
+import { formatDate, getTokenAmount, parseContentData, ProfileAvatar, rewardableThreshold, setMessageFn } from '../../utils';
 import ContentFile from '../../component/contentFile';
 import SkeletonLoader from '../../component/skeleton';
 import { 
@@ -20,17 +20,21 @@ import { setMessage } from '../../store/message';
 import NoData from '../../component/nodata';
 import { IoIosCopy } from 'react-icons/io';
 import { FRONTEND_URL } from '../../config';
+import ErrorPage from '../../component/error';
+import CommunityLoading from './load';
 
 const CommunityContent = ({ feeds, error }) => {
 
     const [modal, setModal] = useState('');
     const [voted, setVoted] = useState(''); 
+    const [errorCnt, setErrorCnt] = useState(false);
     const [loading, setLoading] = useState(true);
     const [isRewarded, setIsRewarded] = useState(false);
     const [claiming, setClaiming] = useState(false);
     const [voters, setVoters] = useState([]);
     const [userVoteType, setUserVoteType] = useState(0);
     const [totalVotes, setTotalVotes] = useState(0);
+    const [claimNotif, setClaimNotif] = useState('');
     const textRef = useRef();
 
     const navigate = useNavigate();
@@ -44,7 +48,8 @@ const CommunityContent = ({ feeds, error }) => {
     const setMessageData = bindActionCreators(setMessage, dispatch);
 
     const cnt = feeds.find(val => val.content_id == content_id);
-    const [content, setContent] = useState(cnt);
+    const [content, setContent] = useState(cnt || {});
+    const contentError = 'No content with this id';
 
     function clickFn(type) { 
         // if user has voted , then do not show stake modal
@@ -57,12 +62,26 @@ const CommunityContent = ({ feeds, error }) => {
     function closeModal() { setModal(''); }
 
     const fetchVoters = async () => {
-        setLoading(true);
+
+        setErrorCnt(false);
+        setLoading(!content.author ? 'fetching' : true);
         const contentContractInstance = await createContentContractInstance(contract.signer);
         const userContractInstance = await createUserContractInstance(contract.signer);
 
         try {
-            if(!content.author) return;
+            if(!content.author) {
+                const res = await contentContractInstance.getContent(content_id-0);
+                if(!res) {
+                    return setErrorCnt(contentError);
+                }
+                const value = parseContentData(res);
+                const author = await userContractInstance.getUsername(value.author);
+                setContent({ ...value, author, author_id: value.author });
+                setLoading(true);
+            } else {
+                setLoading(true);
+            }
+
             const votes_data = await contentContractInstance.getVoters(content_id-0);
             const data = [];
             for(const vote_data of Array.from(votes_data).reverse()) {
@@ -83,6 +102,7 @@ const CommunityContent = ({ feeds, error }) => {
             setVoters(data);
             setLoading(false);
         } catch(err) {
+            setErrorCnt(true);
             setLoading(false);
             setMessageFn(setMessage, { status: 'error', message: 'Error with request. Check internet and try again.'});
         }
@@ -99,7 +119,7 @@ const CommunityContent = ({ feeds, error }) => {
         if(textRef.current && content.sub_data) {
             textRef.current.innerHTML = content.sub_data.content;
         }
-    }, [content.content]);
+    }, [content?.content]);
 
     const date_val = useMemo(() => {
         const date = String(new Date(content.timestamp));
@@ -111,7 +131,16 @@ const CommunityContent = ({ feeds, error }) => {
         else navigate('/app');
     };
 
+    const setter = (note) => {
+        setClaimNotif(note);
+        setTimeout(() => setClaimNotif(''), 2000);
+    };
+
     const claimReward = async () => {
+        if(!userVoteType) return setter('Vote/Stake on the content before you can get reward.');
+        if(isRewarded) return setter('You have claimed reward for this content already.');
+        if(!rewardableThreshold(userVoteType, totalVotes)) return setter('Reward threshold has not been reached.');
+
         try {
             const rewardsContractInstance = await createRewardsContractInstance(contract.signer);
             // check if user can claim reward i.e we not in cool down period
@@ -136,13 +165,6 @@ const CommunityContent = ({ feeds, error }) => {
     };
     
     const dummy = Array(6).fill(0);
-    
-    const showRewardButton = useMemo(() => {
-        // userVoteType && !isRewarded because
-        // isRewarded is true for all but is correct or updated for users who have voted
-        if(!loading && (userVoteType && !isRewarded) && rewardableThreshold(userVoteType, totalVotes)) return true;
-        else return false;
-    }, [userVoteType, loading, isRewarded, totalVotes]);
     
     const copyLink = async () => {
         try {
@@ -172,6 +194,22 @@ const CommunityContent = ({ feeds, error }) => {
                 <AiOutlineClose className='ch-icon cursor' onClick={() => nav()} />
             </div>}
             {
+            
+            ( error || errorCnt ) ?
+
+            <div className='pc-main-error'>
+                <ErrorPage text={errorCnt === contentError ? errorCnt : ''} 
+                    important={true} btnName={errorCnt === contentError ? 'Go back to Home page.' : ''} 
+                    refreshFn={() => {
+                        if(errorCnt === contentError) return navigate('/app');
+                        fetchVoters();
+                    }} 
+                />
+            </div> :
+
+            loading === 'fetching' ?
+
+            <div className='cmtContent'><CommunityLoading /></div> :
 
             !content.author ? <NoData text={'Content not found in this community.'} /> :
 
@@ -181,10 +219,11 @@ const CommunityContent = ({ feeds, error }) => {
                 <div className='pc-main-p'>
                     <span>{`Posted ${formatDate(content.timestamp, true)}`}</span>
 
-                    {showRewardButton && <div className='post__Reward'>
-                        <div className='claim-post-reward cursor' onClick={claimReward}>
+                    {!loading && <div className='post__Reward'>
+                        <div className={`claim-post-reward cursor ${userVoteType-0 !== 0}`} onClick={claimReward}>
                             {claiming ? 'Claiming...' : 'Claim'}
                         </div>
+                        {claimNotif && <div className='claimNotif'>{claimNotif}</div>}
                     </div>}
                 </div>
 
